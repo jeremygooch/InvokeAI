@@ -653,6 +653,8 @@ class SqliteSessionQueue(SessionQueueBase):
         cursor: Optional[int] = None,
         status: Optional[QUEUE_ITEM_STATUS] = None,
         destination: Optional[str] = None,
+        sort_property: Optional[str] = "item_id",
+        sort_ascending: Optional[bool] = False
     ) -> CursorPaginatedResults[SessionQueueItem]:
         cursor_ = self._conn.cursor()
         item_id = cursor
@@ -681,10 +683,10 @@ class SqliteSessionQueue(SessionQueueBase):
                 """
             params.extend([priority, priority, item_id])
 
-        query += """--sql
+        query += f"""--sql
             ORDER BY
                 priority DESC,
-                item_id ASC
+                {sort_property} {"ASC" if sort_ascending else "DESC"}
             LIMIT ?
             """
         params.append(limit + 1)

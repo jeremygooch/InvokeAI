@@ -82,6 +82,8 @@ async def list_queue_items(
     cursor: Optional[int] = Query(default=None, description="The pagination cursor"),
     priority: int = Query(default=0, description="The pagination cursor priority"),
     destination: Optional[str] = Query(default=None, description="The destination of queue items to fetch"),
+    sort_property: Optional[str] = Query(default="item_id", description="Which property to sort the results on"),
+    sort_ascending: Optional[bool] = Query(default=False, description="The sort direction used in conjunction witht the sort property"),
 ) -> CursorPaginatedResults[SessionQueueItem]:
     """Gets cursor-paginated queue items"""
 
@@ -93,6 +95,8 @@ async def list_queue_items(
             cursor=cursor,
             priority=priority,
             destination=destination,
+            sort_property=sort_property,
+            sort_ascending=sort_ascending
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error while listing all items: {e}")
